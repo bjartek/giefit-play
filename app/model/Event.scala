@@ -1,6 +1,5 @@
 package models
 
-import org.jboss.netty.buffer._
 import org.joda.time.DateTime
 import play.api.data._
 import play.api.data.Forms._
@@ -9,9 +8,7 @@ import play.api.data.validation.Constraints._
 
 import reactivemongo.bson._
 import reactivemongo.bson.handlers._
-import play.modules.reactivemongo.ReactiveMongoPlugin
-import concurrent.Future
-
+import org.joda.time.format.ISODateTimeFormat
 case class Event(
                     id: Option[BSONObjectID],
                     title: String,
@@ -23,6 +20,11 @@ case class Event(
 
 object Event {
 
+  val dateFormat = ISODateTimeFormat.date()
+
+  def formWithEmail(email:String) = {
+   form.fill(Event(None, "", "", email, None, None))
+  }
 
   implicit object EventBSONReader extends BSONReader[Event] {
     def fromBSON(document: BSONDocument) :Event = {
@@ -57,7 +59,7 @@ object Event {
       "content" -> text,
       "owner" -> nonEmptyText,
       "creationDate" -> optional(of[Long]),
-      "eventDate" -> optional(of[Long])
+      "eventDate" -> optional(of[String])
     ) { (id, title, content, publisher, creationDate, updateDate) =>
       Event(
         id.map(new BSONObjectID(_)),
@@ -65,7 +67,7 @@ object Event {
         content,
         publisher,
         creationDate.map(new DateTime(_)),
-        updateDate.map(new DateTime(_)))
+        updateDate.map(DateTime.parse(_, dateFormat)))
     } { event =>
       Some(
         (event.id.map(_.stringify),
@@ -73,6 +75,6 @@ object Event {
           event.content,
           event.owner,
           event.creationDate.map(_.getMillis),
-          event.eventDate.map(_.getMillis)))
+          event.eventDate.map(_.toString(dateFormat))))
     })
 }

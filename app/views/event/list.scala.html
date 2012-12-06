@@ -1,4 +1,4 @@
-@(events: Seq[models.Event], eventForm: Form[models.Event])
+@(events: Seq[models.Event])
 @import helper._
 @import helper.twitterBootstrap._
 
@@ -6,17 +6,7 @@
 
 @main("Events") {
     <div class="row">
-        <div class="span3">
-            <h2>Add a new event</h2>
-
-
-            @form(routes.Events.newEvent, 'class -> "well", 'id -> "eventForm"){
-                @eventsfields(eventForm)
-                <input class="btn btn-primary" type="submit">
-            }
-        </div>
-
-        <div class="span9">
+        <div class="span12">
             <h2>Events</h2>
             @if(events.isEmpty) {
                 <p>No events available</p>

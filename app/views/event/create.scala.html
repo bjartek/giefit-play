@@ -1,0 +1,17 @@
+@(eventForm: Form[models.Event])
+@import helper._
+@import helper.twitterBootstrap._
+
+@import snippets._
+
+@main("New Event") {
+    <div class="row">
+        <div class="span12">
+            <h2>Add a new event</h2>
+            @form(routes.Events.newEvent, 'class -> "well", 'id -> "eventForm"){
+                @eventsfields(eventForm)
+                <input class="btn btn-primary" type="submit">
+            }
+        </div>
+    </div>
+}

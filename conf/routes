@@ -10,5 +10,7 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 
 #EventController
-GET    /events                      controllers.Events.index
+GET    /events                      controllers.Events.indexCookie
+GET    /events/new                  controllers.Events.newEventForm
+GET    /events/:hash                controllers.Events.index(hash:String)
 POST   /events                      controllers.Events.newEvent
