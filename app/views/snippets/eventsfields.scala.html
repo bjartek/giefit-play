@@ -1,0 +1,22 @@
+@(eventForm:Form[models.Event])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@inputText(eventForm("title"),
+    'placeholder -> "Title *",
+    '_label -> "")
+
+@inputText(eventForm("owner"),
+    'placeholder -> "E-mail *",
+    '_label -> "")
+@inputText(eventForm("eventDate"),
+    'placeholder -> "Date *",
+    '_label -> ""
+    , '_infos -> ""
+    , 'class -> "datepicker")
+
+@textarea(eventForm("content"),
+    'placeholder -> "Description",
+    '_label -> ""
+    , 'rows -> 5)
