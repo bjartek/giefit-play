@@ -1,0 +1,43 @@
+@(eventForm: Form[models.Event])(implicit login:utils.Login)
+@import helper._
+@import helper.twitterBootstrap._
+
+@import snippets._
+
+@main("Change Event", "event") {
+    <div class="row">
+        <div class="span3">
+            <h2>Details</h2>
+            @form(routes.Events.editEvent(eventForm.get.id.get.stringify), 'class -> "well", 'id -> "eventForm"){
+                @eventsfields(eventForm)
+                <input class="btn btn-primary" type="submit" value="Change">
+            }
+        </div>
+        <div class="span6">
+            <h2>Items</h2>
+
+            <div class="well">
+                <div class="input-append input-xlarge" id="items">
+                    <input class="span3" id="appendedInputButton" type="text" placeholder="What do you want?">
+                    <button class="btn" type="button">Add</button>
+                </div>
+
+                Edit in place of all the items below here
+
+            </div>
+        </div>
+        <div class="span3">
+            <h2>Guests</h2>
+
+            <div class="well">
+                <div class="input-append " id="guests">
+                    <input class="span2" id="appendedInputButton2" type="text" placeholder="E-mail">
+                    <button class="btn" type="button">Add</button>
+                </div>
+
+                Edit in place of all the items below here
+
+            </div>
+        </div>
+    </div>
+}

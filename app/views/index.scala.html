@@ -1,6 +1,6 @@
-@(message: String)
+@(message: String)(implicit login:utils.Login)
 
-@main("Welcome to Play 2.0") {
+@main("Welcome to Play 2.0", "foo") {
     
     @play20.welcome(message)
     

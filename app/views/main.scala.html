@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String, active:String)(content: Html)(implicit login:utils.Login)
 
 <!DOCTYPE html>
 
@@ -30,15 +30,19 @@
                 <div class="container">
                     <a class="brand" href="/">GiefIT</a>
 
-                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </a>
                     <ul class="nav">
-                        <li class="active"><a href="#">Events</a></li>
-                        <li><a href="@routes.Events.newEventForm">Create new event</a></li>
+                        <li @if(active == "listEvents"){class="active"}><a href="@routes.Events.indexCookie">Events</a></li>
+                        <li @if(active == "createEvent"){class="active"}><a href="@routes.Events.newEventForm">Create new event</a></li>
                     </ul>
+
+                    @login.user.map { user =>
+                        <b>user: @user</b>
+                    }
+
+                    @login.lastList.map { id =>
+                        <a href="@routes.Events.details(id)">active list</a>
+                    }
+
                 </div>
             </div>
         </div>

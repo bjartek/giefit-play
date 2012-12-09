@@ -5,18 +5,23 @@
 
 @inputText(eventForm("title"),
     'placeholder -> "Title *",
-    '_label -> "")
+    '_label -> "Title")
+
+@inputText(eventForm("email"),
+    'placeholder -> "Owner E-mail *",
+    '_label -> "Owner E-mail")
 
 @inputText(eventForm("owner"),
-    'placeholder -> "E-mail *",
-    '_label -> "")
+    'placeholder -> "Owner name *",
+    '_label -> "Owner")
+
 @inputText(eventForm("eventDate"),
     'placeholder -> "Date *",
-    '_label -> ""
+    '_label -> "Date"
     , '_infos -> ""
     , 'class -> "datepicker")
 
 @textarea(eventForm("content"),
     'placeholder -> "Description",
-    '_label -> ""
+    '_label -> "Description"
     , 'rows -> 5)

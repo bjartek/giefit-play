@@ -1,10 +1,10 @@
-@(events: Seq[models.Event])
+@(events: Seq[models.Event])(implicit login:utils.Login)
 @import helper._
 @import helper.twitterBootstrap._
 
 @import snippets._
 
-@main("Events") {
+@main("Events", "listEvents") {
     <div class="row">
         <div class="span12">
             <h2>Events</h2>
@@ -13,7 +13,7 @@
             } else {
                 <ul>
                 @events.map { event =>
-                    <li>@event.title</li>
+                    <li><a href="@routes.Events.details(event.id.get.stringify)">@event.title</a></li>
                 }
                 </ul>
             }
