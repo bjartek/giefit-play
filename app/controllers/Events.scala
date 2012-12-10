@@ -17,7 +17,51 @@ import scala.util.{Failure, Success}
 
 object Events extends Controller with MongoController with CookieUtils {
 
+  /*
+  * This will not work. What is wrong in the addItem method in EventStore?
+  */
+  def addGuest() = Action { implicit request =>
 
+
+    val id = BSONObjectID.generate
+    val user = User("Bjarte", "bjarte@bjartek.org")
+    val event = Event(Some(id), "Test", "test", user,None, None)
+
+    val dur = Duration(1, TimeUnit.SECONDS)
+    val insertedEvent = Await.result(EventStore.insert(event), dur)
+
+
+    val guest1 = User("Test", "test@bjartek.org")
+
+    val addRes = EventStore.addGuest(event, guest1)
+
+    addRes.onComplete{
+      case Success(s) => Logger.info("Success " + s.toString)
+      case Failure(f) => Logger.info(f.toString)
+    }
+
+    val guest2 = User("Test2", "test2@bjartek.org")
+
+    val addRes2 = EventStore.addGuest(event, guest2)
+
+    addRes2.onComplete{
+      case Success(s) => Logger.info("Success " + s.toString)
+      case Failure(f) => Logger.info(f.toString)
+    }
+
+
+
+    Logger.info("Raw event is " + event.toString )
+
+    val newEvent = Await.result(EventStore.findById(id.stringify), dur)
+
+    Logger.info("Updated event is " + newEvent.toString )
+
+
+
+
+    Ok(views.html.index("Your new application is ready."))
+  }
   /*
    * This will not work. What is wrong in the addItem method in EventStore?
    */

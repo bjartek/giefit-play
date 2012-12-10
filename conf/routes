@@ -11,6 +11,8 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 #EventController
 GET    /testItemAdd                 controllers.Events.addItem
+GET    /testGuestAdd                 controllers.Events.addGuest
+
 GET    /events                      controllers.Events.indexCookie
 GET    /events/new                  controllers.Events.newEventForm
 GET    /events/details/:id          controllers.Events.details(id:String)

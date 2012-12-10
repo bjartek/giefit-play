@@ -6,6 +6,7 @@ import duration.Duration
 import models.{Event, User}
 
 import reactivemongo.bson._
+import handlers.BSONWriter
 import reactivemongo.bson.handlers.DefaultBSONHandlers.DefaultBSONDocumentWriter
 import reactivemongo.bson.handlers.DefaultBSONHandlers.DefaultBSONReaderHandler
 import ExecutionContext.Implicits.global
@@ -15,6 +16,8 @@ import reactivemongo.core.commands.GetLastError
 import scala.util.{Failure, Success}
 
 object EventStore {
+
+
 
   val db = ReactiveMongoPlugin.db
   val eventCollection = db("events")
@@ -37,6 +40,19 @@ object EventStore {
 
      eventCollection.update(find, update, GetLastError())
 
+  }
+
+  def addGuest(event: Event, guest: User) =  {
+    //This will not work for me.
+    Logger.info("adding guest to event " + event.id)
+    val find = BSONDocument("_id" -> event.id.get)
+
+    val itemDoc = User.UserBSONWriter.toBSON(guest)
+    val arr = BSONArray(itemDoc)
+    val subdoc = BSONDocument("guests" -> arr)
+    val update = BSONDocument("$pushAll" -> subdoc)
+
+    eventCollection.update(find, update, GetLastError())
   }
 
 
