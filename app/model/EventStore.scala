@@ -31,7 +31,7 @@ object EventStore {
     val itemDoc = Item.ItemBSONWriter.toBSON(item)
     val arr = BSONArray(itemDoc)
     val subdoc = BSONDocument("items" -> BSONArray(arr.makeBuffer))
-    val update = BSONDocument("push" -> subdoc)
+    val update = BSONDocument("$push" -> subdoc)
 
     Logger.info(BSONDocument.pretty(update))
 
