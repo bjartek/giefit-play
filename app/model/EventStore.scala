@@ -10,23 +10,11 @@ import reactivemongo.bson.handlers.DefaultBSONHandlers.DefaultBSONDocumentWriter
 import reactivemongo.bson.handlers.DefaultBSONHandlers.DefaultBSONReaderHandler
 import ExecutionContext.Implicits.global
 import play.Logger
-import play.api.libs.Crypto
 import java.util.concurrent.TimeUnit
+import reactivemongo.core.commands.GetLastError
+import scala.util.{Failure, Success}
 
 object EventStore {
-
-
-  def byOwnerHash(hash:String) : BSONDocument = {
-    BSONDocument("$query" -> BSONDocument("owner.hash" -> new BSONString(hash)))
-
-  }
-
-  def findNameForUser(s: String): String =  {
-
-    val res = findOneByQueryBlock(byOwnerHash(Crypto.sign(s)))
-    res.owner.name
-  }
-
 
   val db = ReactiveMongoPlugin.db
   val eventCollection = db("events")
@@ -34,15 +22,42 @@ object EventStore {
 
 
 
+  def addItem(event:Event, item:Item) = {
+
+    //This will not work for me.
+    Logger.info("adding item to event " + event.id)
+    val find = BSONDocument("$query" -> BSONDocument("_id" -> event.id.get))
+    val update = BSONDocument("$pushAll" -> BSONDocument("items" -> BSONArray(Item.ItemBSONWriter.toBSON(item))))
+    val addItem = eventCollection.update(find, update, GetLastError())
+
+    addItem.map(_ => true)
+  }
+
+
+  def byOwnerEmail(email:String) : BSONDocument = {
+    BSONDocument("$query" -> BSONDocument("owner.email" -> new BSONString(email)))
+
+  }
+
+
+
+  def findNameForUser(s: String): String =  {
+    val res = findOneByQueryBlock(byOwnerEmail(s))
+    Logger.info("Finding user for email " + res.owner.toString)
+
+    res.owner.name
+  }
+
+
   def findForUser(hash:String) : Future[List[Event]] = {
 
     Logger.info("finding events for user with hash " + hash)
-    findByQuery(byOwnerHash(hash))
+    findByQuery(byOwnerEmail(hash))
 
   }
 
   def insert(event: Event) = {
-    eventCollection.insert(event)
+    eventCollection.insert(event, GetLastError())
   }
 
   def findById(id:String) : Future[Event] = {

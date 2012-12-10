@@ -10,7 +10,9 @@ object ApplicationBuild extends Build {
     val appDependencies = Seq(
       "reactivemongo" %% "reactivemongo" % "0.1-SNAPSHOT" cross CrossVersion.full,
       "play.modules.reactivemongo" %% "play2-reactivemongo" % "0.1-SNAPSHOT" cross CrossVersion.full,
-      "com.typesafe" % "play-plugins-mailer_2.10" % "2.1-SNAPSHOT"
+      "com.typesafe" % "play-plugins-mailer_2.10" % "2.1-SNAPSHOT",
+      "org.specs2" % "specs2_2.10.0-RC2" % "1.12.2" % "test"
+
 
     )
 
