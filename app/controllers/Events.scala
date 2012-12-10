@@ -37,8 +37,18 @@ object Events extends Controller with MongoController with CookieUtils {
 
     addRes.onComplete{
      case Success(s) => Logger.info("Success " + s.toString)
-     case Failure(f) => Logger.info("Failure " + f.toString)
+     case Failure(f) => Logger.info(f.toString)
     }
+
+    val item2 = model.Item("Test item 2", "2", "2", "2", "2")
+
+    val addRes2 = EventStore.addItem(event, item2)
+
+    addRes2.onComplete{
+      case Success(s) => Logger.info("Success " + s.toString)
+      case Failure(f) => Logger.info(f.toString)
+    }
+
 
 
     Logger.info("Raw event is " + event.toString )
