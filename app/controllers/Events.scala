@@ -13,6 +13,7 @@ import reactivemongo.bson.BSONObjectID
 import play.Logger
 import play.api.libs.Crypto
 import java.util.concurrent.TimeUnit
+import scala.util.{Failure, Success}
 
 object Events extends Controller with MongoController with CookieUtils {
 
@@ -21,6 +22,7 @@ object Events extends Controller with MongoController with CookieUtils {
    * This will not work. What is wrong in the addItem method in EventStore?
    */
   def addItem() = Action { implicit request =>
+
 
     val id = BSONObjectID.generate
     val user = User("Bjarte", "bjarte@bjartek.org")
@@ -31,7 +33,12 @@ object Events extends Controller with MongoController with CookieUtils {
 
     val item = model.Item("Test item", "", "", "", "")
 
-    Await.result(EventStore.addItem(event, item), dur)
+    val addRes = EventStore.addItem(event, item)
+
+    addRes.onComplete{
+     case Success(s) => Logger.info("Success " + s.toString)
+     case Failure(f) => Logger.info("Failure " + f.toString)
+    }
 
 
     Logger.info("Raw event is " + event.toString )
