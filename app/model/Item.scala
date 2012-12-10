@@ -31,7 +31,7 @@ object Item {
         "url" -> BSONString(user.url),
         "image" -> BSONString(user.image),
         "status" -> BSONString(user.image),
-        "fullfilled" -> BSONString(user.fulfilled))
+        "fulfilled" -> BSONString(user.fulfilled))
 
     }
   }

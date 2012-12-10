@@ -26,12 +26,8 @@ object EventStore {
 
     //This will not work for me.
     Logger.info("adding item to event " + event.id)
-    val find = BSONDocument("$query" -> BSONDocument("_id" -> event.id.get))
-
-    val itemDoc = Item.ItemBSONWriter.toBSON(item)
-    val arr = BSONArray(itemDoc)
-    val subdoc = BSONDocument("items" -> BSONArray(arr.makeBuffer))
-    val update = BSONDocument("$push" -> subdoc)
+    val find = BSONDocument("_id" -> event.id.get)
+    val update = BSONDocument("$push" -> BSONDocument("items" -> BSONArray( Item.ItemBSONWriter.toBSON(item))))
 
     Logger.info(BSONDocument.pretty(update))
 
