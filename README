@@ -1,4 +1,6 @@
-This is your new Play 2.0 application
+GiefIT play style
 =====================================
 
-This file will be packaged with your application, when using `play dist`.
+Playing around with play and reactivemongo. 
+
+This app is a simple gift list with a small twist. 
