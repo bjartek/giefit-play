@@ -27,8 +27,7 @@ object EventStore {
 
   def addItem(event:Event, item:Item) = {
 
-    //This will not work for me.
-    Logger.info("adding item to event " + event.id)
+    Logger.info("adding item " + item.toString  + " to event " + event.id)
     val find = BSONDocument("_id" -> event.id.get)
 
     val itemDoc = Item.ItemBSONWriter.toBSON(item)
@@ -36,15 +35,13 @@ object EventStore {
     val subdoc = BSONDocument("items" -> arr)
     val update = BSONDocument("$pushAll" -> subdoc)
 
-    Logger.info(BSONDocument.pretty(update))
 
      eventCollection.update(find, update, GetLastError())
 
   }
 
   def addGuest(event: Event, guest: User) =  {
-    //This will not work for me.
-    Logger.info("adding guest to event " + event.id)
+    Logger.info("adding guest " + guest.toString + " to event " + event.id)
     val find = BSONDocument("_id" -> event.id.get)
 
     val itemDoc = User.UserBSONWriter.toBSON(guest)
@@ -57,7 +54,7 @@ object EventStore {
 
 
   def byOwnerEmail(email:String) : BSONDocument = {
-    BSONDocument("$query" -> BSONDocument("owner.email" -> new BSONString(email)))
+    BSONDocument("owner.email" -> new BSONString(email))
 
   }
 
@@ -83,7 +80,7 @@ object EventStore {
   }
 
   def findById(id:String) : Future[Event] = {
-    val query = BSONDocument("$query" -> BSONDocument("_id" -> new BSONObjectID(id)))
+    val query = BSONDocument("_id" -> new BSONObjectID(id))
     findOneByQuery(query)
   }
 

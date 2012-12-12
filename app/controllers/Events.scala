@@ -167,12 +167,10 @@ object Events extends Controller with MongoController with CookieUtils {
       errors =>     BadRequest(views.html.event.create(errors)),
       event => AsyncResult {
         Logger.info("Storing event " + event.toString)
-      val newEvent = event.copy(id = Some(BSONObjectID.generate), creationDate = Some(new DateTime() ))
-      val res = EventStore.insert(newEvent)
-
-        res.map( res =>
+        val res = EventStore.insert(event)
+        res.map( _ =>
           Redirect(routes.Events.indexCookie())
-            .withCookies(createListCookie(newEvent.id.get.stringify), createUserCookie(event.owner.email)))
+            .withCookies(createListCookie(event.id.get.stringify), createUserCookie(event.owner.email)))
       }
     )
   }
