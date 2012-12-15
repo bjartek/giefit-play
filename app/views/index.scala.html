@@ -1,7 +1,10 @@
-@(message: String)(implicit login:utils.Login)
+@(title: String)(implicit login:utils.Login)
 
-@main("Welcome to Play 2.0", "foo") {
-    
-    @play20.welcome(message)
-    
+@main(title, "main") {
+    <div class="row">
+        <div class="span3">
+           Here there will be docs
+        </div>
+    </div>
+
 }

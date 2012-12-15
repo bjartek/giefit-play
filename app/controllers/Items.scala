@@ -21,7 +21,7 @@ object Items extends Controller with MongoController with CookieUtils {
         val itemForm =  ev.items.find(it => it.name == itemName).map(it => Item.form.fill(it)).getOrElse(Item.form)
 
         Ok(views.html.event.details(ev, Event.form.fill(ev), itemForm, User.form))
-          .withCookies(createUserCookie(ev.owner.email))
+          .withCookies(createUserCookies(ev.owner) :_*)
       }.fallbackTo(
         future{Ok(views.html.event.list(List()))})
     }

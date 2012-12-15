@@ -87,12 +87,6 @@ object EventStore {
 
 
 
-  def findNameForUser(s: String): String =  {
-    val res = findOneByQueryBlock(byOwnerEmail(s))
-    Logger.info("Finding user for email " + res.owner.toString)
-
-    res.owner.name
-  }
 
 
   def findForUser(hash:String) : Future[List[Event]] = {
@@ -116,12 +110,6 @@ object EventStore {
     eventCollection.find(query).headOption().filter(_.isDefined).map(_.get)
   }
 
-  def findOneByQueryBlock(query:BSONDocument) : Event = {
-    val res = findOneByQuery(query)
-
-    Await.result(res, Duration(2, TimeUnit.SECONDS))
-
-  }
 
   def findByQuery(query:BSONDocument): Future[List[Event]] = {
     eventCollection.find(query).toList.filter(_.nonEmpty)

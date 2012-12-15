@@ -35,13 +35,29 @@
                         <li @if(active == "createEvent"){class="active"}><a href="@routes.Events.newEventForm">Create new event</a></li>
                     </ul>
 
-                    @login.user.map { user =>
-                        <b>user: @user</b>
+                    @login.username.map { user =>
+                        <div class="btn-group pull-right">
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                                Logged in as: @user
+                            <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                @login.user.map{ u =>
+                                    <li><a href="@routes.Events.indexCookie()">@u</a></li>
+                                }
+
+                                @login.lastList.map { id =>
+                                    <li><a href="@routes.Events.details(id)">last active list</a></li>
+
+                                }
+
+                                <li class="divider"></li>
+                                <li><a href="@routes.Application.logout()">Logout</a></li>
+                            <!-- dropdown menu links -->
+                            </ul>
+                        </div>
                     }
 
-                    @login.lastList.map { id =>
-                        <a href="@routes.Events.details(id)">active list</a>
-                    }
 
                 </div>
             </div>

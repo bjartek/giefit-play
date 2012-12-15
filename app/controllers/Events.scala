@@ -34,7 +34,7 @@ object Events extends Controller with MongoController with CookieUtils {
       val events = EventStore.findForUser(email)
 
       events.map{
-        ev =>Ok(views.html.event.list(ev)).withCookies(createUserCookie(ev.head.owner.email))
+        ev =>Ok(views.html.event.list(ev)).withCookies(createUserCookies(ev.head.owner) :_*)
       }.fallbackTo(
         future{Ok(views.html.event.list(List()))})
     }
@@ -42,13 +42,13 @@ object Events extends Controller with MongoController with CookieUtils {
 
   def newEventForm = Action {implicit request =>
 
-    val formWithEmail = login.user.map(u => {
-      val name = EventStore.findNameForUser(u)
-      Ok(views.html.event.create(Event.formWithEmail(name, u)))
-    })
 
-    formWithEmail.orElse(Some(Ok(views.html.event.create(Event.form)))).get
+    val filledForm = for{
+      email <- login.user
+      name <- login.username
+    } yield Event.formWithEmail(name, email)
 
+    Ok(views.html.event.create(filledForm.getOrElse(Event.form)))
   }
 
 
@@ -90,9 +90,12 @@ object Events extends Controller with MongoController with CookieUtils {
       event => AsyncResult {
         Logger.info("Storing event " + event.toString)
         val res = EventStore.insert(event)
-        res.map( _ =>
+        res.map( _ => {
+
+          val cookies:List[Cookie] = createListCookie(event.id.get.stringify) :: createUserCookies(event.owner)
           Redirect(routes.Events.details(event.id.get.stringify))
-            .withCookies(createListCookie(event.id.get.stringify), createUserCookie(event.owner.email)))
+            .withCookies(cookies :_*)})
+
       }
     )
   }
