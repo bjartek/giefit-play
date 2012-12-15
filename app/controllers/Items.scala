@@ -12,6 +12,8 @@ import play.api.libs.Crypto
 object Items extends Controller with MongoController with CookieUtils {
 
 
+  def delete(eventId:String) = TODO
+
   def showEditItemForm(eventId:String, itemName:String) = Action { implicit request =>
 
     Async {

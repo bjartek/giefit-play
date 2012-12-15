@@ -25,15 +25,30 @@
                         @itemfields(itemForm, "Add")
                     }
                 }
-                <div class="well">
-                    <ul>
-                        @event.items.map { it =>
-                            <li>
-                                @Html(it.webTitle) <a href="@routes.Items.showEditItemForm(event.id.get.stringify, it.name)"><i class="icon-edit"></i> </a>
-                            </li>
-                        }
-                    </ul>
-                </div>
+                @if(!event.items.isEmpty) {
+
+                    <div class="well">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <th>Item</th>
+                                <th>Action</th>
+                            </thead>
+
+
+                            @event.items.map { it =>
+                                <tr>
+                                    <td>@Html(it.webTitle)</td>
+                                    <td>
+                                        <a href="@routes.Items.showEditItemForm(event.id.get.stringify, it.name)"><i class="icon-edit"></i> </a>
+                                        <a href="@routes.Items.delete(event.id.get.stringify)" class="delete"><i class="icon-trash"></i> </a>
+
+                                    </td>
+                                </tr>
+                            }
+
+                        </table>
+                    </div>
+                }
 
         </div>
         <div class="span4">
@@ -49,15 +64,30 @@
                     @userfields(userForm, "Add")
                 }
             }
-            <div class="well">
-                <ul>
-                @event.guests.map { it =>
-                    <li>
-                        @it.name (@it.email)<a href="@routes.Guests.showEditForm(event.id.get.stringify, it.email)"><i class="icon-edit"></i> </a>
-                    </li>
-                }
-                </ul>
-            </div>
+            @if(!event.guests.isEmpty) {
+                <div class="well">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <th>Guest</th>
+                            <th>Action</th>
+                        </thead>
+
+
+                        @event.guests.map { it =>
+                            <tr>
+                                <td>@it.name (@it.email)</td>
+                                <td>
+                                    <a href="@routes.Guests.showEditForm(event.id.get.stringify, it.email)"><i class="icon-edit"></i> </a>
+                                    <a href="@routes.Guests.delete(event.id.get.stringify)" class="delete"><i class="icon-trash"></i> </a>
+
+                                </td>
+                            </tr>
+                        }
+
+                    </table>
+                </div>
+            }
+
         </div>
     </div>
 }

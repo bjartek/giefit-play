@@ -2,7 +2,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/html">
     <head>
         <title>@title</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,21 +38,21 @@
                     @login.username.map { user =>
                         <div class="btn-group pull-right">
                             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                                Logged in as: @user
+                                <i class="icon-user"></i> @user
                             <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
                                 @login.user.map{ u =>
-                                    <li><a href="@routes.Events.indexCookie()">@u</a></li>
+                                    <li><a href="@routes.Events.indexCookie()"><i class="icon-envelope"></i> @u</a></li>
                                 }
 
                                 @login.lastList.map { id =>
-                                    <li><a href="@routes.Events.details(id)">last active list</a></li>
+                                    <li><a href="@routes.Events.details(id)"><i class="icon-magnet"></i> active event</a></li>
 
                                 }
 
                                 <li class="divider"></li>
-                                <li><a href="@routes.Application.logout()">Logout</a></li>
+                                <li><a href="@routes.Application.logout()"><i class="icon-off"></i> Logout</a></li>
                             </ul>
                         </div>
                     }

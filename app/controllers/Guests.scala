@@ -9,6 +9,7 @@ import concurrent._
 
 object Guests extends Controller with MongoController with CookieUtils {
 
+  def delete(eventId:String) = TODO
 
   def showEditForm(eventId:String, guestId:String) = Action { implicit request =>
 
