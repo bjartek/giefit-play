@@ -1,111 +1,15 @@
 package controllers
 
-import models._
+import model._
 import utils._
 import play.api.mvc._
 import play.modules.reactivemongo._
 
-import org.joda.time.DateTime
-import model.EventStore
 import concurrent._
-import duration.Duration
-import reactivemongo.bson.BSONObjectID
 import play.Logger
 import play.api.libs.Crypto
-import java.util.concurrent.TimeUnit
-import scala.util.{Failure, Success}
 
 object Events extends Controller with MongoController with CookieUtils {
-
-  /*
-  * This will not work. What is wrong in the addItem method in EventStore?
-  */
-  def addGuest() = Action { implicit request =>
-
-
-    val id = BSONObjectID.generate
-    val user = User("Bjarte", "bjarte@bjartek.org")
-    val event = Event(Some(id), "Test", "test", user,None, None)
-
-    val dur = Duration(1, TimeUnit.SECONDS)
-    val insertedEvent = Await.result(EventStore.insert(event), dur)
-
-
-    val guest1 = User("Test", "test@bjartek.org")
-
-    val addRes = EventStore.addGuest(event, guest1)
-
-    addRes.onComplete{
-      case Success(s) => Logger.info("Success " + s.toString)
-      case Failure(f) => Logger.info(f.toString)
-    }
-
-    val guest2 = User("Test2", "test2@bjartek.org")
-
-    val addRes2 = EventStore.addGuest(event, guest2)
-
-    addRes2.onComplete{
-      case Success(s) => Logger.info("Success " + s.toString)
-      case Failure(f) => Logger.info(f.toString)
-    }
-
-
-
-    Logger.info("Raw event is " + event.toString )
-
-    val newEvent = Await.result(EventStore.findById(id.stringify), dur)
-
-    Logger.info("Updated event is " + newEvent.toString )
-
-
-
-
-    Ok(views.html.index("Your new application is ready."))
-  }
-  /*
-   * This will not work. What is wrong in the addItem method in EventStore?
-   */
-  def addItem() = Action { implicit request =>
-
-
-    val id = BSONObjectID.generate
-    val user = User("Bjarte", "bjarte@bjartek.org")
-    val event = Event(Some(id), "Test", "test", user,None, None)
-
-    val dur = Duration(1, TimeUnit.SECONDS)
-    val insertedEvent = Await.result(EventStore.insert(event), dur)
-
-    val item = model.Item("Test item", "", "", "", "")
-
-    val addRes = EventStore.addItem(event, item)
-
-    addRes.onComplete{
-     case Success(s) => Logger.info("Success " + s.toString)
-     case Failure(f) => Logger.info(f.toString)
-    }
-
-    val item2 = model.Item("Test item 2", "2", "2", "2", "2")
-
-    val addRes2 = EventStore.addItem(event, item2)
-
-    addRes2.onComplete{
-      case Success(s) => Logger.info("Success " + s.toString)
-      case Failure(f) => Logger.info(f.toString)
-    }
-
-
-
-    Logger.info("Raw event is " + event.toString )
-
-    val newEvent = Await.result(EventStore.findById(id.stringify), dur)
-
-    Logger.info("Updated event is " + newEvent.toString )
-
-
-
-
-    Ok(views.html.index("Your new application is ready."))
-  }
 
 
   def index(hash:String) = Action { implicit request =>
@@ -154,13 +58,31 @@ object Events extends Controller with MongoController with CookieUtils {
       Logger.info(login.toString)
 
       val event = EventStore.findById(eventId)
-      event.map{ ev => Ok(views.html.event.details(Event.form.fill(ev)))
+      event.map{ ev => Ok(views.html.event.details(ev, Event.form.fill(ev), Item.form, User.form))
 
       }.fallbackTo(future{redirectToEventList})
     }
   }
 
-  def editEvent(hash:String) = TODO
+
+  def editEvent(eventId: String) = Action { implicit request =>
+    Event.form.bindFromRequest.fold(
+      errors =>  Async {
+        val event = EventStore.findById(eventId)
+        event.map( ev => BadRequest(views.html.event.details(ev, errors, Item.form, User.form)))
+      },
+      newEv => Async {
+
+        val res = for {
+          event <- EventStore.findById(eventId)
+          insert <- EventStore.updateEvent(event, newEv)
+        } yield (insert)
+
+        res.map(_ => Redirect(routes.Events.details(eventId)))
+      }
+    )
+  }
+
 
   def newEvent = Action { implicit request =>
     Event.form.bindFromRequest.fold(
@@ -169,7 +91,7 @@ object Events extends Controller with MongoController with CookieUtils {
         Logger.info("Storing event " + event.toString)
         val res = EventStore.insert(event)
         res.map( _ =>
-          Redirect(routes.Events.indexCookie())
+          Redirect(routes.Events.details(event.id.get.stringify))
             .withCookies(createListCookie(event.id.get.stringify), createUserCookie(event.owner.email)))
       }
     )

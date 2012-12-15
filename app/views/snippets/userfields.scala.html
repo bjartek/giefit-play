@@ -1,0 +1,12 @@
+@(userForm:Form[model.User])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@inputText(userForm("name"),
+    'placeholder -> "Name *",
+    '_label -> "Name")
+
+@inputText(userForm("email"),
+    'placeholder -> "E-mail *",
+    '_label -> "E-mail")

@@ -1,4 +1,4 @@
-package models
+package model
 
 import org.joda.time.DateTime
 import play.api.data._
@@ -10,10 +10,11 @@ import reactivemongo.bson._
 import reactivemongo.bson.handlers._
 import org.joda.time.format.ISODateTimeFormat
 import play.Logger
-import model.Item
 import reactivemongo.bson.BSONDateTime
 import reactivemongo.bson.BSONString
 import scala.Some
+import java.net.{MalformedURLException, URL}
+import validation.{Constraints, Constraint}
 
 case class Event(
                   id: Option[BSONObjectID],
@@ -23,7 +24,8 @@ case class Event(
                   creationDate: Option[DateTime],
                   eventDate: Option[DateTime],
                   guests: List[User] = List(),
-                  items: List[Item] = List()) {
+                  items: List[Item] = List(),
+                  status:String = "Open") {
 
   def prettyDate = eventDate.map(x => x.toString(Event.dateFormat)).getOrElse(" ukjent ")
 
@@ -39,6 +41,17 @@ class BsonReaderHelper(doc: TraversableBSONDocument) {
     doc.getAs[BSONArray](fieldName).get.toTraversable.toList.map {
       t =>
         reader.fromBSON(t.asInstanceOf[TraversableBSONDocument])
+    }
+  }
+
+
+  def optionalUrl(fieldName: String):Option[URL] = {
+
+    val string = doc.getAs[BSONString](fieldName)
+    try {
+      string.map(s => new URL(s.value))
+    } catch {
+      case e:MalformedURLException => None
     }
   }
 
@@ -118,7 +131,7 @@ object Event {
       "title" -> nonEmptyText,
       "content" -> text,
       "owner" -> nonEmptyText,
-      "email" -> nonEmptyText,
+      "email" -> (email.verifying(Constraints.nonEmpty)),
       "creationDate" -> optional(of[Long]),
       "eventDate" -> optional(of[String])
     ) {

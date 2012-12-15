@@ -19,7 +19,7 @@ form.form-horizontal label { width: 160px; float: left; }
 form.form-horizontal div.input { overflow: hidden; margin-bottom: 15px;}
 form.form-horizontal .help-block { font-style: italic; }
 
-#eventForm .help-block {
+.help-block {
     display: none;
 }
 

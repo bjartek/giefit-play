@@ -3,21 +3,25 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
+GET     /                                   controllers.Application.index
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets/*file                       controllers.Assets.at(path="/public", file)
 
 
-#EventController
-GET    /testItemAdd                 controllers.Events.addItem
-GET    /testGuestAdd                 controllers.Events.addGuest
+GET    /events                              controllers.Events.indexCookie
+GET    /events/new                          controllers.Events.newEventForm
+GET    /events/details/:id                  controllers.Events.details(id:String)
+GET    /events/:hash                        controllers.Events.index(hash:String)
 
-GET    /events                      controllers.Events.indexCookie
-GET    /events/new                  controllers.Events.newEventForm
-GET    /events/details/:id          controllers.Events.details(id:String)
-GET    /events/:hash                controllers.Events.index(hash:String)
+POST   /events                              controllers.Events.newEvent
+POST   /events/:hash                        controllers.Events.editEvent(hash:String)
 
-POST   /events                      controllers.Events.newEvent
-POST   /events/:hash                controllers.Events.editEvent(hash:String)
+GET  /events/:eventId/item/:itemId          controllers.Items.showEditItemForm(eventId:String, itemId:String)
+POST /events/:eventId/item                  controllers.Items.addItem(eventId:String)
+POST /events/:eventId/item/:itemId/edit     controllers.Items.editItem(eventId:String, itemId:String)
+
+GET  /events/:eventId/guest/:guestId        controllers.Guests.showEditForm(eventId:String, guestId:String)
+POST /events/:eventId/guest                 controllers.Guests.addGuest(eventId:String)
+POST /events/:eventId/guest/:guestId/edit   controllers.Guests.editGuest(eventId:String, guestId:String)
 

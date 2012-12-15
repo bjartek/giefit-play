@@ -1,14 +1,19 @@
-package models
+package model
 
 
 import reactivemongo.bson._
 import reactivemongo.bson.handlers._
 import play.api.libs.Crypto
 import play.Logger
+import play.api.data.Form
+import play.api.data.Forms._
+import reactivemongo.bson.BSONString
+import play.api.data.validation.Constraints
 
 case class User(name:String, email: String)  {
 
   lazy val hash = Crypto.encryptAES(email)
+
 }
 
 object User {
@@ -36,5 +41,12 @@ object User {
 
     }
   }
+
+
+  val form = Form(
+    mapping(
+      "name" -> nonEmptyText,
+      "email" -> (email verifying(Constraints.nonEmpty))
+     )(User.apply)(User.unapply))
 
 }

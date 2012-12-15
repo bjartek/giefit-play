@@ -1,12 +1,12 @@
-@(eventForm: Form[models.Event])(implicit login:utils.Login)
+@(event:model.Event, eventForm: Form[model.Event], itemForm: Form[model.Item], userForm:Form[model.User])(implicit login:utils.Login)
 @import helper._
 @import helper.twitterBootstrap._
 
 @import snippets._
 
 @main("Change Event", "event") {
-    <div class="row">
-        <div class="span3">
+    <div class="row" xmlns="http://www.w3.org/1999/html">
+        <div class="span4">
             <h2>Details</h2>
             @form(routes.Events.editEvent(eventForm.get.id.get.stringify), 'class -> "well", 'id -> "eventForm"){
                 @eventsfields(eventForm)
@@ -14,30 +14,53 @@
             }
 
         </div>
-        <div class="span6">
+        <div class="span4">
             <h2>Items</h2>
-
-            <div class="well">
-                <div class="input-append input-xlarge" id="items">
-                    <input class="span3" id="appendedInputButton" type="text" placeholder="What do you want?">
-                    <button class="btn" type="button">Add</button>
+                @if(itemForm.value.isDefined) {
+                    @form(routes.Items.editItem(event.id.get.stringify, itemForm.get.name), 'class -> "well", 'id -> "itemForm"){
+                        @itemfields(itemForm)
+                        <input class="btn btn-primary" type="submit" value="Edit">
+                    }
+                } else {
+                    @form(routes.Items.addItem(event.id.get.stringify), 'class -> "well", 'id -> "itemForm"){
+                        @itemfields(itemForm)
+                        <input class="btn btn-primary" type="submit" value="Add">
+                    }
+                }
+                <div class="well">
+                    <ul>
+                        @event.items.map { it =>
+                            <li>
+                                @Html(it.webTitle) <a href="@routes.Items.showEditItemForm(event.id.get.stringify, it.name)"><i class="icon-edit"></i> </a>
+                            </li>
+                        }
+                    </ul>
                 </div>
 
-                Edit in place of all the items below here
-
-            </div>
         </div>
-        <div class="span3">
+        <div class="span4">
             <h2>Guests</h2>
 
+            @if(userForm.value.isDefined) {
+                @form(routes.Guests.editGuest(event.id.get.stringify, userForm.get.email), 'class -> "well", 'id -> "guestForm"){
+                    @userfields(userForm)
+                    <input class="btn btn-primary" type="submit" value="Edit">
+                }
+
+            } else {
+                @form(routes.Guests.addGuest(event.id.get.stringify), 'class -> "well", 'id -> "guestForm"){
+                    @userfields(userForm)
+                    <input class="btn btn-primary" type="submit" value="Add">
+                }
+            }
             <div class="well">
-                <div class="input-append " id="guests">
-                    <input class="span2" id="appendedInputButton2" type="text" placeholder="E-mail">
-                    <button class="btn" type="button">Add</button>
-                </div>
-
-                Edit in place of all the items below here
-
+                <ul>
+                @event.guests.map { it =>
+                    <li>
+                        @it.name (@it.email)<a href="@routes.Guests.showEditForm(event.id.get.stringify, it.email)"><i class="icon-edit"></i> </a>
+                    </li>
+                }
+                </ul>
             </div>
         </div>
     </div>

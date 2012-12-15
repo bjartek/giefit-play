@@ -3,26 +3,53 @@ import play.api.Play.current
 import play.modules.reactivemongo._
 import concurrent._
 import duration.Duration
-import models.{Event, User}
 
 import reactivemongo.bson._
-import handlers.BSONWriter
 import reactivemongo.bson.handlers.DefaultBSONHandlers.DefaultBSONDocumentWriter
 import reactivemongo.bson.handlers.DefaultBSONHandlers.DefaultBSONReaderHandler
 import ExecutionContext.Implicits.global
 import play.Logger
 import java.util.concurrent.TimeUnit
 import reactivemongo.core.commands.GetLastError
-import scala.util.{Failure, Success}
 
 object EventStore {
 
+
+  def updateItem(event: Event, value: String, item: Item) = {
+    val find = BSONDocument("_id" -> event.id.get, "items.name" -> BSONString(value))
+    val update = BSONDocument("$set" -> BSONDocument("items.$" -> Item.ItemBSONWriter.toBSON(item)))
+    eventCollection.update(find, update, GetLastError())
+  }
+
+
+  def updateGuest(event: Event, value: String, guest: User) = {
+    val find = BSONDocument("_id" -> event.id.get, "guests.email" -> BSONString(value))
+    val update = BSONDocument("$set" -> BSONDocument("guests.$" -> User.UserBSONWriter.toBSON(guest)))
+    eventCollection.update(find, update, GetLastError())
+  }
 
 
   val db = ReactiveMongoPlugin.db
   val eventCollection = db("events")
   implicit val reader = Event.EventBSONReader
 
+
+
+  def updateEvent(stored: Event, changed: Event) =  {
+
+    val toBeStoredEvent = stored.copy(
+      title = changed.title,
+      content = changed.content,
+      owner = changed.owner,
+      creationDate = changed.creationDate,
+      eventDate = changed.eventDate
+      )
+
+    Logger.info(toBeStoredEvent.toString)
+    val find = BSONDocument("_id" -> toBeStoredEvent.id.get)
+
+    eventCollection.update(find, toBeStoredEvent, GetLastError())
+  }
 
 
   def addItem(event:Event, item:Item) = {

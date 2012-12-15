@@ -1,0 +1,12 @@
+@(itemForm:Form[model.Item])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@inputText(itemForm("name"),
+    'placeholder -> "Name *",
+    '_label -> "Name")
+
+@inputText(itemForm("url"),
+    'placeholder -> "URL",
+    '_label -> "URL")
