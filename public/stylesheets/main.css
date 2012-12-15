@@ -15,11 +15,19 @@
 a.delete { color: #CC0000; }
 h2 { margin-bottom: 20px;}
 
-form.form-horizontal label { width: 160px; float: left; }
-form.form-horizontal div.input { overflow: hidden; margin-bottom: 15px;}
-form.form-horizontal .help-block { font-style: italic; }
-
-.help-block {
-    display: none;
+/* More condensed horizontal forms */
+.medium-label .controls {
+    margin-left: 120px;
 }
+.medium-label .control-label {
+    width: 100px;
+}
+
+.small-label .controls {
+    margin-left: 60px;
+}
+.small-label .control-label {
+    width: 40px;
+}
+
 

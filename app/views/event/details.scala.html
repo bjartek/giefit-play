@@ -8,23 +8,21 @@
     <div class="row" xmlns="http://www.w3.org/1999/html">
         <div class="span4">
             <h2>Details</h2>
-            @form(routes.Events.editEvent(eventForm.get.id.get.stringify), 'class -> "well", 'id -> "eventForm"){
-                @eventsfields(eventForm)
-                <input class="btn btn-primary" type="submit" value="Change">
+            @form(routes.Events.editEvent(event.id.get.stringify), 'class -> "well form-horizontal medium-label", 'id -> "eventForm"){
+                @eventsfields(eventForm, "Edit")
             }
 
         </div>
         <div class="span4">
             <h2>Items</h2>
+
                 @if(itemForm.value.isDefined) {
-                    @form(routes.Items.editItem(event.id.get.stringify, itemForm.get.name), 'class -> "well", 'id -> "itemForm"){
-                        @itemfields(itemForm)
-                        <input class="btn btn-primary" type="submit" value="Edit">
+                    @form(routes.Items.editItem(event.id.get.stringify, itemForm.get.name), 'class -> "well form-horizontal small-label", 'id -> "itemForm"){
+                        @itemfields(itemForm, "Edit")
                     }
                 } else {
-                    @form(routes.Items.addItem(event.id.get.stringify), 'class -> "well", 'id -> "itemForm"){
-                        @itemfields(itemForm)
-                        <input class="btn btn-primary" type="submit" value="Add">
+                    @form(routes.Items.addItem(event.id.get.stringify), 'class -> "well form-horizontal small-label", 'id -> "itemForm"){
+                        @itemfields(itemForm, "Add")
                     }
                 }
                 <div class="well">
@@ -42,15 +40,13 @@
             <h2>Guests</h2>
 
             @if(userForm.value.isDefined) {
-                @form(routes.Guests.editGuest(event.id.get.stringify, userForm.get.email), 'class -> "well", 'id -> "guestForm"){
-                    @userfields(userForm)
-                    <input class="btn btn-primary" type="submit" value="Edit">
+                @form(routes.Guests.editGuest(event.id.get.stringify, userForm.get.email), 'class -> "well form-horizontal small-label", 'id -> "guestForm"){
+                    @userfields(userForm, "Edit")
                 }
 
             } else {
-                @form(routes.Guests.addGuest(event.id.get.stringify), 'class -> "well", 'id -> "guestForm"){
-                    @userfields(userForm)
-                    <input class="btn btn-primary" type="submit" value="Add">
+                @form(routes.Guests.addGuest(event.id.get.stringify), 'class -> "well form-horizontal small-label", 'id -> "guestForm"){
+                    @userfields(userForm, "Add")
                 }
             }
             <div class="well">

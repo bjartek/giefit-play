@@ -1,7 +1,7 @@
-@(userForm:Form[model.User])
+@(userForm:Form[model.User], buttonName:String)
 
 @import helper._
-@import helper.twitterBootstrap._
+@implicitField = @{ FieldConstructor(twitterBootstrapInput.f) }
 
 @inputText(userForm("name"),
     'placeholder -> "Name *",
@@ -10,3 +10,10 @@
 @inputText(userForm("email"),
     'placeholder -> "E-mail *",
     '_label -> "E-mail")
+
+
+<div class="control-group">
+    <div class="controls">
+        <button class="btn btn-primary" type="submit">@buttonName</button>
+    </div>
+</div>

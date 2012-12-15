@@ -1,7 +1,7 @@
-@(itemForm:Form[model.Item])
+@(itemForm:Form[model.Item], buttonName:String)
 
 @import helper._
-@import helper.twitterBootstrap._
+@implicitField = @{ FieldConstructor(twitterBootstrapInput.f) }
 
 @inputText(itemForm("name"),
     'placeholder -> "Name *",
@@ -10,3 +10,10 @@
 @inputText(itemForm("url"),
     'placeholder -> "URL",
     '_label -> "URL")
+
+
+<div class="control-group">
+    <div class="controls">
+        <button class="btn btn-primary" type="submit">@buttonName</button>
+    </div>
+</div>
